@@ -10,7 +10,7 @@ header-includes:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 library(tidyverse)
-library(DT)
+# library(DT)
 # require(devtools)
 # install_github('ramnathv/rCharts')
 ```
@@ -48,34 +48,64 @@ tc <- function(x, row.names=FALSE, col.names=TRUE, ...) {
 
 ## Import
 
+Base R ([doc](https://www.rdocumentation.org/packages/utils/versions/3.6.1/topics/read.table)):
+```{r}
+# import from clipboard
+my_data <- read.table(file = "clipboard")
+my_data <- read.table(file = "clipboard", sep = "\t", header=TRUE)
+
+# from a CSV
+my_data <- read.table("c:/mydata.csv", header=TRUE, sep=",", row.names="id")
+```
+
+Using *readr*:
+```{r}
+read_csv("challenge-2.csv")
+```
+
+Using *readxl*:
 ```{r}
 library(readxl)
 read_excel("List_activities_diab.xlsx")
 ```
 
-Basic R import:
-
+Using *xlsx* (`.xls` and `.xlsx`):
 ```{r}
-# import from clipboard
-my_data <- read.table(file = "clipboard", sep = "\t", header=TRUE)
+file <- system.file("tests", "test_import.xlsx", package = "xlsx")
+# Preserves the type of data
+read.xlsx(file, sheetIndex, header=TRUE, colClasses=NA)
+# Faster
+read.xlsx2(file, sheetIndex, header=TRUE, colClasses="character")
 ```
-
-
 
 
 
 ## Export
 
-### Simple Excel export
+### CSV Export
 
+Base R:
 ```{r}
-write.xlsx(link, "iqview_bloc2_sector_link.xlsx")
+write.table(data, file = "MyData.csv", row.names=FALSE, na="", col.names=FALSE, sep=",")
+```
+
+Using *readr*:
+```{r}
+write_csv(data, "challenge-2.csv")
+```
+
+Using *xlsx*:
+```{r}
+write.xlsx(data, "filename.xls", sheetName="Sheet1", col.names=TRUE, row.names=TRUE, append=FALSE)
+write.xlsx(data, "filename.xlsx")
+# faster
+write.xlsx2(data, "filename.xlsx")
 ```
 
 
 ### Complex Excel export
 
-You can create a file excel to export a large data set.
+You can create a file excel to export a large data set. 
 To create an Excel file:
 
 - First have to create a *workbook* using `create_wb()`.
@@ -89,13 +119,13 @@ wb <- createWorkbook(title = "DataExport", creator = "Erwan Guyomarch")
 
 ```{r}
 addWorksheet(wb, "NewSheet")
-writeData(wb, "NewSheet", data)
+writeData(wb, "NewSheet", data) 
 ```
 
 - Finally you can create the Excel file in the working folder using `save_wb()`:
 
 ```{r}
-file_name <- "DataExport.xlsx"
+file_name <- "filename.xlsx"
 local_path <- dirname(rstudioapi::getSourceEditorContext()$path)
 saveWorkbook(wb, paste(local_path, name, sep="/"), TRUE)
 ```
