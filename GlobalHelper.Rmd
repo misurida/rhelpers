@@ -1,0 +1,115 @@
+---
+title: "Global Helpers"
+author: "Erwan Guyomarch"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+header-includes:
+   - \usepackage{babel}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+library(tidyverse)
+library(DT)
+# require(devtools)
+# install_github('ramnathv/rCharts')
+```
+
+
+## Header
+
+You can import latex packages adding this chunk in the .Rmd header:
+```
+
+```
+
+
+
+
+## Useful functions
+
+```{r}
+# convert the numbers to formatted strings
+comma <- function(x) format(x, digits = 2, big.mark = ",")
+
+# transform an excel integer-formatted date to a r date
+get_date <- function(x, format = '%m.%y') {
+  ifelse(!is.na(as.numeric(x)), format(as.Date(as.numeric(x), origin="1899-12-30"), format), x)
+}
+
+# copy a small data.frame to the clipboard
+tc <- function(x, row.names=FALSE, col.names=TRUE, ...) {
+  write.table(x, "clipboard", sep="\t", row.names=row.names, col.names=col.names, ...)
+}
+```
+
+
+
+
+## Import
+
+```{r}
+library(readxl)
+read_excel("List_activities_diab.xlsx")
+```
+
+Basic R import:
+
+```{r}
+# import from clipboard
+my_data <- read.table(file = "clipboard", sep = "\t", header=TRUE)
+```
+
+
+
+
+
+## Export
+
+### Simple Excel export
+
+```{r}
+write.xlsx(link, "iqview_bloc2_sector_link.xlsx")
+```
+
+
+### Complex Excel export
+
+You can create a file excel to export a large data set.
+To create an Excel file:
+
+- First have to create a *workbook* using `create_wb()`.
+
+```{r}
+library(openxlsx)
+wb <- createWorkbook(title = "DataExport", creator = "Erwan Guyomarch")
+```
+
+- Then you have to create a new sheet using `wb_sheet()`. You can modify a row using `wd_row()`.
+
+```{r}
+addWorksheet(wb, "NewSheet")
+writeData(wb, "NewSheet", data)
+```
+
+- Finally you can create the Excel file in the working folder using `save_wb()`:
+
+```{r}
+file_name <- "DataExport.xlsx"
+local_path <- dirname(rstudioapi::getSourceEditorContext()$path)
+saveWorkbook(wb, paste(local_path, name, sep="/"), TRUE)
+```
+
+### Modification of the columns
+
+```{r}
+
+```
+
+
+
+
+## Other
+
+- LaTeX array generator: <https://www.tablesgenerator.com/#>
+  - Add \begin{table}[ht]
