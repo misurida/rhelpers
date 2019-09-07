@@ -363,9 +363,9 @@ summary {
 
 
 <h1 class="title toc-ignore">Global Helpers</h1>
-<h3 class="subtitle">My Subtitle</h3>
+<h3 class="subtitle">R Cheat Sheet</h3>
 <h4 class="author">Erwan Guyomarch</h4>
-<h4 class="date">06 septembre, 2019</h4>
+<h4 class="date">07 septembre, 2019</h4>
 
 </div>
 
@@ -374,11 +374,12 @@ summary {
 <h2>Setup</h2>
 <div id="header" class="section level3">
 <h3>Header</h3>
+<p>Basic:</p>
 <pre><code>---
 title: &quot;MyTitle&quot;
 subtitle: &quot;MySubtitle&quot;
 author: &quot;MyName&quot;
-date: &quot;06 septembre, 2019&quot;
+date: &quot;07 septembre, 2019&quot;
 ---</code></pre>
 <p>Pdf:</p>
 <pre><code>output: 
@@ -430,8 +431,16 @@ header-includes:
 </ul>
 </div>
 </div>
+<div id="useful-shortcuts" class="section level2">
+<h2>Useful Shortcuts</h2>
+<pre class="r"><code># list the files in the working directory
+list.files()
+
+# delete all the stored variables
+rm(list = ls())</code></pre>
+</div>
 <div id="useful-functions" class="section level2">
-<h2>Useful functions</h2>
+<h2>Useful Functions</h2>
 <pre class="r"><code># convert the numbers to formatted strings
 comma &lt;- function(x) format(x, digits = 2, big.mark = &quot;,&quot;)
 
@@ -445,63 +454,104 @@ tc &lt;- function(x, row.names=FALSE, col.names=TRUE, ...) {
   write.table(x, &quot;clipboard&quot;, sep=&quot;\t&quot;, row.names=row.names, col.names=col.names, ...)
 }</code></pre>
 </div>
-<div id="import" class="section level2">
-<h2>Import</h2>
-<p>Base R (<a href="https://www.rdocumentation.org/packages/utils/versions/3.6.1/topics/read.table">doc</a>):</p>
+<div id="import-data" class="section level2">
+<h2>Import Data</h2>
+<div id="clipboard" class="section level3">
+<h3>Clipboard</h3>
+<p>Base R (<a href="https://www.rdocumentation.org/packages/utils/versions/3.6.1/topics/read.table">doc</a>) (<em>.csv</em> and <em>Clipboard</em>):</p>
 <pre class="r"><code># import from clipboard
 my_data &lt;- read.table(file = &quot;clipboard&quot;)
-my_data &lt;- read.table(file = &quot;clipboard&quot;, sep = &quot;\t&quot;, header=TRUE)
-
-# from a CSV
-my_data &lt;- read.table(&quot;c:/mydata.csv&quot;, header=TRUE, sep=&quot;,&quot;, row.names=&quot;id&quot;)</code></pre>
-<p>Using <em>readr</em>:</p>
-<pre class="r"><code>read_csv(&quot;challenge-2.csv&quot;)</code></pre>
-<p>Using <em>readxl</em>:</p>
-<pre class="r"><code>library(readxl)
-read_excel(&quot;List_activities_diab.xlsx&quot;)</code></pre>
-<p>Using <em>xlsx</em> (<code>.xls</code> and <code>.xlsx</code>):</p>
-<pre class="r"><code>file &lt;- system.file(&quot;tests&quot;, &quot;test_import.xlsx&quot;, package = &quot;xlsx&quot;)
+my_data &lt;- read.table(file = &quot;clipboard&quot;, sep = &quot;\t&quot;, header=TRUE)</code></pre>
+</div>
+<div id="csv" class="section level3">
+<h3>CSV</h3>
+<p>Base R:</p>
+<pre class="r"><code>my_data &lt;- read.table(&quot;c:/mydata.csv&quot;, header=TRUE, sep=&quot;,&quot;, row.names=&quot;id&quot;)</code></pre>
+<p>Using <code>library(readr)</code> (<em>.csv</em>):</p>
+<pre class="r"><code>data &lt;- read_csv(&quot;filename.csv&quot;)</code></pre>
+</div>
+<div id="excel-.xls-.xlsx" class="section level3">
+<h3>Excel (.xls &amp; .xlsx)</h3>
+<p>Using <code>library(readxl)</code> (<em>.xls</em> and <em>.xlsx</em>):</p>
+<pre class="r"><code>data &lt;- read_excel(&quot;filename.xlsx&quot;)
+data &lt;- read_excel(&quot;filename.xlsx&quot;, sheet = &quot;sheet1&quot;, col_names = F, col_types = NULL, skip = 2)
+data &lt;- 
+  read_excel(&quot;iqview_blocs_sectors.xls&quot;,
+             range = &quot;A4:B4663&quot;,
+             col_names = c(&quot;Col1&quot;, &quot;Col2&quot;),
+             col_types = c(&quot;numeric&quot;, &quot;guess&quot;)
+  )</code></pre>
+<p>Using <code>library(xlsx)</code> (<em>.xls</em> and <em>.xlsx</em>):</p>
+<pre class="r"><code>file &lt;- system.file(&quot;tests&quot;, &quot;filename.xlsx&quot;, package = &quot;xlsx&quot;)
 # Preserves the type of data
 read.xlsx(file, sheetIndex, header=TRUE, colClasses=NA)
 # Faster
 read.xlsx2(file, sheetIndex, header=TRUE, colClasses=&quot;character&quot;)</code></pre>
+<p>Using <code>library(openxlsx)</code> (<em>.xslx</em>):</p>
+<pre class="r"><code>read.xlsx(&quot;filename.xlsx&quot;, colNames = F, rows = 1:2, cols = 2:4, detectDates = TRUE)</code></pre>
 </div>
-<div id="export" class="section level2">
-<h2>Export</h2>
-<div id="csv-export" class="section level3">
-<h3>CSV Export</h3>
+</div>
+<div id="export-data" class="section level2">
+<h2>Export Data</h2>
+<div id="csv-1" class="section level3">
+<h3>CSV</h3>
 <p>Base R:</p>
 <pre class="r"><code>write.table(data, file = &quot;MyData.csv&quot;, row.names=FALSE, na=&quot;&quot;, col.names=FALSE, sep=&quot;,&quot;)</code></pre>
 <p>Using <em>readr</em>:</p>
 <pre class="r"><code>write_csv(data, &quot;challenge-2.csv&quot;)</code></pre>
-<p>Using <em>xlsx</em>:</p>
+</div>
+<div id="excel-.xls-.xslx" class="section level3">
+<h3>Excel (.xls &amp; .xslx)</h3>
+<p>Using <em>xlsx</em> (<em>.xls</em> and <em>.xlsx</em>):</p>
 <pre class="r"><code>write.xlsx(data, &quot;filename.xls&quot;, sheetName=&quot;Sheet1&quot;, col.names=TRUE, row.names=TRUE, append=FALSE)
 write.xlsx(data, &quot;filename.xlsx&quot;)
 # faster
 write.xlsx2(data, &quot;filename.xlsx&quot;)</code></pre>
-</div>
-<div id="complex-excel-export" class="section level3">
-<h3>Complex Excel export</h3>
-<p>You can create a file excel to export a large data set. To create an Excel file:</p>
-<ul>
-<li>First have to create a <em>workbook</em> using <code>create_wb()</code>.</li>
-</ul>
-<pre class="r"><code>library(openxlsx)
-wb &lt;- createWorkbook(title = &quot;DataExport&quot;, creator = &quot;Erwan Guyomarch&quot;)</code></pre>
-<ul>
-<li>Then you have to create a new sheet using <code>wb_sheet()</code>. You can modify a row using <code>wd_row()</code>.</li>
-</ul>
-<pre class="r"><code>addWorksheet(wb, &quot;NewSheet&quot;)
-writeData(wb, &quot;NewSheet&quot;, data) </code></pre>
-<ul>
-<li>Finally you can create the Excel file in the working folder using <code>save_wb()</code>:</li>
-</ul>
-<pre class="r"><code>file_name &lt;- &quot;filename.xlsx&quot;
+<p>Using <em>openxlsx</em> (<em>.xlsx</em>):</p>
+<pre class="r"><code># basic
+write.xlsx(data, file = &quot;export.xlsx&quot;, colWidths = &quot;auto&quot;)
+
+# with custom style
+hs1 &lt;- createStyle(fgFill = &quot;#e96b0a&quot;, halign = &quot;CENTER&quot;, border = &quot;Bottom&quot;, fontColour = &quot;white&quot;)
+write.xlsx(data,
+  file = &quot;export.xlsx&quot;,
+  colWidths = &quot;auto&quot;,
+  borders = &quot;surrounding&quot;,
+  headerStyle = hs1
+)
+
+# as a tabel
+write.xlsx(data,
+  file = &quot;export.xlsx&quot;,
+  colWidths = &quot;auto&quot;,
+  firstActiveRow = 2, # freeze the first row
+  firstActiveCol = 3, # freeze 2 colums
+  asTable = TRUE, # export as a table (style below)
+  tableStyle = &quot;TableStyleLight8&quot;,
+)</code></pre>
+<div id="excel-workbook" class="section level4">
+<h4>Excel Workbook</h4>
+<p>You can create a workbook using <code>library(openxlsx)</code>.</p>
+<pre class="r"><code># First have to create a *workbook* using `create_wb()`.
+wb &lt;- createWorkbook(title = &quot;DataExport&quot;, creator = &quot;TheCreator&quot;)
+
+# Then you have to create a new sheet using `wb_sheet()`. You can modify a row using `wd_row()`.
+addWorksheet(wb, &quot;NewSheet&quot;)
+writeData(wb, &quot;NewSheet&quot;, data) 
+
+# Finally you can create the Excel file in the working folder using `save_wb()`:
+file_name &lt;- &quot;filename.xlsx&quot;
 local_path &lt;- dirname(rstudioapi::getSourceEditorContext()$path)
-saveWorkbook(wb, paste(local_path, name, sep=&quot;/&quot;), TRUE)</code></pre>
+saveWorkbook(wb, paste(local_path, file_name, sep=&quot;/&quot;), TRUE)</code></pre>
+<p>One chunk export:</p>
+<pre class="r"><code>file_name &lt;- &quot;BigAnalysis&quot;
+wb &lt;- createWorkbook(title = file_name)
+addWorksheet(wb, &quot;Data&quot;)
+writeData(wb, &quot;Data&quot;, unnest)
+file_ext &lt;- &quot;.xlsx&quot;
+local_path &lt;- dirname(rstudioapi::getSourceEditorContext()$path)
+saveWorkbook(wb, paste(local_path, paste(file_name, file_ext, sep=&quot;&quot;), sep=&quot;/&quot;), TRUE)</code></pre>
 </div>
-<div id="modification-of-the-columns" class="section level3">
-<h3>Modification of the columns</h3>
 </div>
 </div>
 <div id="other" class="section level2">
@@ -514,6 +564,28 @@ saveWorkbook(wb, paste(local_path, name, sep=&quot;/&quot;), TRUE)</code></pre>
 </ul>
 <p>Table and lists generation package:</p>
 <pre class="r"><code>install.packages(&#39;pander&#39;)</code></pre>
+</div>
+<div id="nested-operations" class="section level2">
+<h2>Nested Operations</h2>
+<pre class="r"><code># create a nested data frame
+by_country &lt;- gapminder %&gt;%
+  group_by(country, continent) %&gt;%
+  nest()
+
+# apply a function to all the nested lists
+custom_function &lt;- function(df) lm(lifeExp ~ year, data = df)
+new_col &lt;- map(by_country$data, custom_function)
+
+# merge the new_col
+by_country &lt;- by_country %&gt;%
+  mutate(model = map(data, new_col))
+
+# compute the residuals for each row
+by_country &lt;- by_country %&gt;%
+  mutate(resids = map2(data, model, add_residuals))
+
+# expands for each sublist data row and resid
+output &lt;- unnest(by_country, resids)</code></pre>
 </div>
 
 
